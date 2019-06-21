@@ -3,15 +3,54 @@
 <head>
 <script>
 
-	process_result = function() {
-		document.getElementById("result").innerHTML = "Om";
-	}
+	var process_result = function() {
+		var num_specimen = parseInt(document.getElementById("num_specimen").value);
+		var num_vendor = parseInt(document.getElementById("num_vendor").value);
+		var specimens = Array.apply(null, {length: num_specimen}).map(Number.call, Number);
+		var num_specimen_vendor = Math.floor(num_specimen / num_vendor);
+
+		var randomsort = function(a, b) {
+			return Math.random() > 0.5 ? -1 : 1;
+		}
+
+		if (num_specimen_vendor == 0) {
+			result = "No enough specimens";
+			document.getElementById("result").innerHTML = result;
+			return;
+		}
+
+		specimens.sort(randomsort);
+
+		var idx_specimen = 0;
+		var idx_vendor = 0;
+		var result = "Result: <br />";
+
+
+		while (idx_specimen + num_specimen_vendor < num_specimen && idx_vendor < num_vendor - 1) {
+			result += "Vendor " + (idx_vendor + 1) + " = ";
+			for (var i = 0; i < num_specimen_vendor; i++) {
+				result += (specimens[idx_specimen + i] + 1) + ", ";
+			}
+
+			result += "<br />";
+			idx_specimen += num_specimen_vendor;
+			idx_vendor += 1;
+		}
+
+		result += "Vendor " + (idx_vendor + 1) + " = ";
+		while (idx_specimen < num_specimen) {
+			result += (specimens[idx_specimen] + 1) + ", ";
+			idx_specimen += 1;
+		}
+
+		document.getElementById("result").innerHTML = result;
+	};
 
 </script>
 </head>
 <body>
-<input type="number" name="quantity" min="1" id="num_specimen">
-<input type="number" name="quantity" min="1" id="num_specimen_per_vendor">
+	<p>Specimen number: <input type="number" name="quantity" min="1" value="50" id="num_specimen"></p>
+	<p>Vendor number: <input type="number" name="quantity" min="1" value="5" id="num_vendor"></p>
 <button type="button" onclick="process_result()">Show result</button>
 
 <p id="result"></p>
